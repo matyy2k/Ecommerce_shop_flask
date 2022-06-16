@@ -19,7 +19,7 @@
 
 .DS_Store
 #images
-static/images
+*/static/images
 ## File-based project format
 *.ipr
 *.iml
