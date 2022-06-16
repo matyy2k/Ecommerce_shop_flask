@@ -1,11 +1,10 @@
 from wtforms import Form, StringField, TextAreaField, PasswordField, SubmitField, validators, ValidationError
 from flask_wtf.file import FileRequired, FileAllowed, FileField
 from flask_wtf import FlaskForm
-from .model import Register
+from .model import Customer
 
 
 class CustomerRegisterForm(FlaskForm):
-    name = StringField('Imię')
     username = StringField('Nazwa użytkownika', [validators.DataRequired()])
     email = StringField('Adres email', [validators.Email(), validators.DataRequired()])
     password = PasswordField('Hasło', [validators.DataRequired(), validators.EqualTo('confirm', message=' Hasła '
@@ -21,11 +20,11 @@ class CustomerRegisterForm(FlaskForm):
     submit = SubmitField('Zarejestruj')
 
     def validate_username(self, username):
-        if Register.query.filter_by(username=username.data).first():
+        if Customer.query.filter_by(username=username.data).first():
             raise ValidationError("Taki użytkownik istnieje")
 
     def validate_email(self, email):
-        if Register.query.filter_by(email=email.data).first():
+        if Customer.query.filter_by(email=email.data).first():
             raise ValidationError("Taki adres email istnieje")
 
 

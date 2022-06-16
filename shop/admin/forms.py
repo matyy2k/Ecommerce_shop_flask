@@ -1,6 +1,6 @@
-from wtforms import StringField, PasswordField, validators, ValidationError
+from wtforms import StringField, PasswordField, validators, ValidationError, BooleanField
 from flask_wtf import FlaskForm
-from .models import User
+from .models import Admin
 
 
 class RegistrationForm(FlaskForm):
@@ -11,13 +11,15 @@ class RegistrationForm(FlaskForm):
         validators.EqualTo('confirm', message='Hasła muszą być takie same')
     ])
     confirm = PasswordField('Powtórz hasło')
+    moderator = BooleanField('Moderator', default=False)
+    admin = BooleanField('Administrator', default=True)
 
     def validate_username(self, field):
-        if User.query.filter_by(username=field.data).first():
+        if Admin.query.filter_by(username=field.data).first():
             raise ValidationError('Taki użytkownik istnieje')
 
     def validate_email(self, field):
-        if User.query.filter_by(email=field.data).first():
+        if Admin.query.filter_by(email=field.data).first():
             raise ValidationError('Taki adres email istnieje')
 
 

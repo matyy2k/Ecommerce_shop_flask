@@ -6,12 +6,11 @@ import json
 
 @login_manager.user_loader
 def user_loader(user_id):
-    return Register.query.get(user_id)
+    return Customer.query.get(user_id)
 
 
-class Register(db.Model, UserMixin):
+class Customer(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=False)
     username = db.Column(db.String(50), unique=True)
     email = db.Column(db.String(50), unique=True)
     password = db.Column(db.String(200), unique=False)
@@ -22,7 +21,7 @@ class Register(db.Model, UserMixin):
     zipcode = db.Column(db.String(50), unique=False)
 
     def __repr__(self):
-        return '<Register %r>' % self.name
+        return '<Klient %r>' % self.name
 
 
 class CustomerOrder(db.Model):

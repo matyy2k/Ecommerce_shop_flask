@@ -1,0 +1,43 @@
+{% extends 'admin/base_admin.html' %}
+{% block content %}
+{% include 'navbar_admin.html' %}
+<div class="container">
+    {% include '_messages.html' %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nazwa</th>
+            <th scope="col">Cena</th>
+            <th scope="col">Zniżka</th>
+            <th scope="col">Producent</th>
+            <th scope="col">Zdjęcie</th>
+            <th scope="col">Edycja</th>
+            <th scope="col">Usuwanie</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if products %}
+        {% for product in products %}
+        <tr>
+            <th scope="row">{{ loop.index }}</th>
+            <td>{{ product.name }}</td>
+            <td>{{ product.price }}</td>
+            <td>{{ product.discount }}</td>
+            <td>{{ product.brand.name }}</td>
+            <td><img src="{{url_for('static',filename='images/' + product.image)}}" alt="{{product.name}}" width="50"
+                     height="20"></td>
+            <td><a href="{{url_for('update_product', id=product.id)}}" class="btn btn-sm btn-info">X</a></td>
+            <td>
+                <form action="{{url_for('delete_product',id=product.id)}}" method="post">
+                    <button type="submit" class="btn btn-danger">X</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock content %}

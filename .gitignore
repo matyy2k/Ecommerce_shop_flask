@@ -17,6 +17,7 @@
 #db
 *.db
 
+.DS_Store
 #images
 static/images
 ## File-based project format

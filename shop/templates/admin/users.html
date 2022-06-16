@@ -1,0 +1,85 @@
+{% extends 'admin/base_admin.html' %}
+{% block content %}
+{% include 'navbar_admin.html' %}
+<div class="container">
+    {% include '_messages.html' %}
+    {% if admins %}
+    <h3>Administrator/moderator</h3>
+    <table class="table table-striped">
+        <thead>
+
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nazwa</th>
+            <th scope="col">Email</th>
+            <th scope="col">Hasło</th>
+            <th scope="col">Admin</th>
+            <th scope="col">Moderator</th>
+            <th scope="col">Edycja</th>
+            <th scope="col">Usuwanie</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for admin in admins %}
+        <tr>
+            <th scope="row">{{ loop.index }}</th>
+            <td>{{ admin.username }}</td>
+            <td>{{ admin.email }}</td>
+            <td>{{ admin.password }}</td>
+            <td>{{ admin.admin }}</td>
+            <td>{{ admin.moderator }}</td>
+            <td><a href="{{url_for('update_user', id=admin.id)}}" class="btn btn-sm btn-info">X</a></td>
+            <td>
+                <form action="{{url_for('delete_user',id=admin.id)}}" method="post">
+                    <button type="submit" class="btn btn-danger">X</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+<!--    customer-->
+    {% if customers %}
+    <h3>Klienci</h3>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nazwa</th>
+            <th scope="col">Email</th>
+            <th scope="col">Hasło</th>
+            <th scope="col">Państwo</th>
+            <th scope="col">Numer kontaktowy</th>
+            <th scope="col">Adres</th>
+            <th scope="col">Kod pocztowy</th>
+            <th scope="col">Edycja</th>
+            <th scope="col">Usuwanie</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for customer in customers %}
+        <tr>
+            <th scope="row">{{ loop.index }}</th>
+            <td>{{ customer.username }}</td>
+            <td>{{ customer.email }}</td>
+            <td>{{ customer.password }}</td>
+            <td>{{ customer.country }}</td>
+            <td>{{ customer.city }}</td>
+            <td>{{ customer.address }}</td>
+            <td>{{ customer.zipcode }}</td>
+            <td><a href="{{url_for('update_cust', id=customer.id)}}" class="btn btn-sm btn-info">X</a></td>
+            <td>
+                <form action="{{url_for('delete_cust',id=customer.id)}}" method="post">
+                    <button type="submit" class="btn btn-danger">X</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

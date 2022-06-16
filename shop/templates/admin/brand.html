@@ -3,93 +3,30 @@
 {% include 'navbar_admin.html' %}
 <div class="container">
     {% include '_messages.html' %}
-    <table class="table tbale-sm">
+    <table class="table table-striped">
         <thead>
-            <th>Sr</th>
-            <th>Name</th>
-            <th>Edit</th>
-            <th>Delete</th>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nazwa</th>
+            <th scope="col">Edycja</th>
+            <th scope="col">Usuwanie</th>
+        </tr>
         </thead>
         <tbody>
-         {% if brands %}
-          {% for brand in brands %}
-          <tr>
-            <td>{{loop.index}}</td>
+        {% if brands %}
+        {% for brand in brands %}
+        <tr>
+            <th scope="row">{{ loop.index }}</th>
             <td>{{ brand.name }}</td>
-            <td><a href="{{url_for('updatebrand', id=brand.id)}}" class="btn btn-sm btn-info">Edit</a></td>
-            <td><button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#exampleModal-{{brand.id}}">
-              Delete
-            </button></td>
-          </tr>
-
-
-<!--============= MODEL ===================-->
-
-<div class="modal fade" id="exampleModal-{{brand.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{ brand.name }}</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p class="text-danger">Are you Sure that you want to delete this brand ({{ brand.name }}) </p>
-       </div>
-       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <form action="{{url_for('deletebrand',id=brand.id)}}" method="post">
-          <button type="submit" class="btn btn-danger">Delete</button>
-        </form>
-
-      </div>
-    </div>
-  </div>
-</div>
-<!--==============MODEL ===================-->
-
-          {% endfor %}
-          {% else %}
-          {% for category in categories %}
-          <tr>
-            <td>{{loop.index}}</td>
-            <td>{{ category.name }}</td>
-            <td> <a href="{{url_for('updatecat', id=category.id)}}" class="btn btn-sm btn-info">Edit</a></td>
-            <td><button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#exampleModal-{{category.id}}">
-              Delete
-            </button></td>
-          </tr>
-
-
-<!--============= MODEL ===================-->
-      <div class="modal fade" id="exampleModal-{{category.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel2">{{category.name }}</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <p class="text-danger">Are you Sure that you want to delete this Category ({{ category.name }}) </p>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-              <form action="{{url_for('deletecat',id=category.id)}}" method="post">
-                <button type="submit" class="btn btn-danger">Delete</button>
-              </form>
-
-            </div>
-          </div>
-        </div>
-      </div>
-<!--==============MODEL ===================-->
-
-          {% endfor %}
-          {% endif %}
+            <td><a href="{{url_for('update_brand', id=brand.id)}}" class="btn btn-sm btn-info">X</a></td>
+            <td>        <form action="{{url_for('delete_brand',id=brand.id)}}" method="post">
+          <button type="submit" class="btn btn-danger">X</button>
+        </form></td>
+        </tr>
+        {% endfor %}
+        {% endif %}
         </tbody>
     </table>
+
 </div>
 {% endblock content %}

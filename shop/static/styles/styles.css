@@ -11286,3 +11286,21 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+
+body{
+  min-height: 100vh;
+  margin: 0;
+
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+header{
+  min-height:50px;
+  background:lightcyan;
+}
+
+footer{
+  min-height:50px;
+  background:PapayaWhip;
+}

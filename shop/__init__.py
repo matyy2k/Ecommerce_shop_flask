@@ -32,9 +32,9 @@ with app.app_context():
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view='customer_login'
+login_manager.login_view='login'
 login_manager.needs_refresh_message_category='danger'
-login_manager.login_message = u"Please login first"
+login_manager.login_message = u"Zaloguj się najpierw"
 
 
 from shop.products import routes

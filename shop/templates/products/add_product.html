@@ -1,6 +1,5 @@
 {% extends 'admin/base_admin.html' %}
 {% block content %}
-{% include 'navbar_admin.html' %}
 <section class="vh-100" style="background-color: #eee;">
     <div class="container h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
@@ -9,7 +8,9 @@
                     <div class="card-body p-md-5">
                         <div class="row justify-content-center">
                             <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1 text-center">
+
                                 <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Dodaj produkt</p>
+
                                 {% from "_formhelpers.html" import render_field %}
 
                                 <form class="mx-1 mx-md-4" method="post" enctype="multipart/form-data">
@@ -18,7 +19,7 @@
                                         {{ render_field(form.price, class="form-control") }}
                                         {{ render_field(form.discount, class="form-control") }}
                                         {{ render_field(form.stock, class="form-control") }}
-                                        <label for="brand">Add a brand</label>
+                                        <label for="brand">Producent</label>
                                         <select name="brand" id="brand" class="form-control" required>
                                             {% if getproduct %}
                                             <option value="{{getproduct.brand_id}}" style="display: none;">
@@ -28,7 +29,7 @@
                                             <option value="{{brand.id}}">{{brand.name}}</option>
                                             {% endfor %}
                                             {% else %}
-                                            <option value=""> Select A brand</option>
+                                            <option value="">Wybierz producenta z listy</option>
                                             {% for brand in brands %}
                                             <option value="{{brand.id}}">{{brand.name}}</option>
                                             {% endfor %}
@@ -40,21 +41,21 @@
                                     <div class="container">
                                         <div class="row">
                                             {% if getproduct %}
-                                            <div class="col-md-4"><input type="file" name="image_1" id="image_1">
-                                                <a href="{{url_for('static',filename='images/' + getproduct.image_1)}}">
+                                            <div class="col-md-4"><input type="file" name="image" id="image">
+                                                <a href="{{url_for('static',filename='images/' + getproduct.image)}}">
                                                     images/{{
-                                                    getproduct.image_1}}</a>
+                                                    getproduct.image}}</a>
                                             </div>
 
                                             {% else %}
-                                            <div class="col-md-4">{{ render_field(form.image_1) }}</div>
+                                            <div class="col-md-4">{{ render_field(form.image) }}</div>
 
                                             {% endif %}
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                                         <input type="submit"
-                                               value="{% if getproduct %}Update {% else %}Add{% endif %} product"
+                                               value="Dodaj produkt"
                                                class="btn-outline-info">
                                     </div>
                                 </form>
