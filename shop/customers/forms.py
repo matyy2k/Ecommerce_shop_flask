@@ -1,22 +1,21 @@
-from wtforms import Form, StringField, TextAreaField, PasswordField, SubmitField, validators, ValidationError
-from flask_wtf.file import FileRequired, FileAllowed, FileField
+from wtforms import StringField, PasswordField, SubmitField, validators, ValidationError
 from flask_wtf import FlaskForm
-from .model import Customer
+from .models import Customer
 
 
 class CustomerRegisterForm(FlaskForm):
-    username = StringField('Nazwa użytkownika', [validators.DataRequired()])
-    email = StringField('Adres email', [validators.Email(), validators.DataRequired()])
-    password = PasswordField('Hasło', [validators.DataRequired(), validators.EqualTo('confirm', message=' Hasła '
-                                                                                                        'muszą '
-                                                                                                        'pasować ')])
-    confirm = PasswordField('Powtórz hasło', [validators.DataRequired()])
+    username = StringField('Nazwa', [validators.Length(min=4, max=25)])
+    email = StringField('Adres email', [validators.Length(min=6, max=35)])
+    password = PasswordField('Hasło', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Hasła muszą być takie same')
+    ])
+    confirm = PasswordField('Powtórz hasło')
     country = StringField('Państwo', [validators.DataRequired()])
     city = StringField('Miasto', [validators.DataRequired()])
     contact = StringField('Numer telefonu', [validators.DataRequired()])
     address = StringField('Adres zamieszkania', [validators.DataRequired()])
     zipcode = StringField('Kod pocztowy', [validators.DataRequired()])
-
     submit = SubmitField('Zarejestruj')
 
     def validate_username(self, username):
@@ -28,6 +27,6 @@ class CustomerRegisterForm(FlaskForm):
             raise ValidationError("Taki adres email istnieje")
 
 
-class customer_loginFrom(FlaskForm):
-    email = StringField('Email', [validators.Email(), validators.DataRequired()])
+class CustomerLoginForm(FlaskForm):
+    email = StringField('Adres email', [validators.Length(min=6, max=35)])
     password = PasswordField('Hasło', [validators.DataRequired()])

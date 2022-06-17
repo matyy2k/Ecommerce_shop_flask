@@ -56,8 +56,8 @@ def getCart():
     return render_template('products/carts.html', grandtotal=grandtotal, brands=brands())
 
 
-@app.route('/updatecart/<int:code>', methods=['POST'])
-def updatecart(code):
+@app.route('/update_cart/<int:code>', methods=['POST'])
+def update_cart(code):
     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
         return redirect(url_for('home'))
     if request.method == "POST":
@@ -91,7 +91,7 @@ def delete_item(id):
         return redirect(url_for('getCart'))
 
 
-@app.route('/clearcart')
+@app.route('/clear_cart')
 def clearcart():
     try:
         session.pop('Shoppingcart', None)

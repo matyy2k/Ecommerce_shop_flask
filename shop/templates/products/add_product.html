@@ -1,5 +1,6 @@
 {% extends 'admin/base_admin.html' %}
 {% block content %}
+{% include 'navbar_admin.html' %}
 <section class="vh-100" style="background-color: #eee;">
     <div class="container h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
@@ -9,7 +10,7 @@
                         <div class="row justify-content-center">
                             <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1 text-center">
 
-                                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Dodaj produkt</p>
+                                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Dodaj/Edytuj produkt</p>
 
                                 {% from "_formhelpers.html" import render_field %}
 
@@ -55,7 +56,7 @@
                                     </div>
                                     <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                                         <input type="submit"
-                                               value="Dodaj produkt"
+                                               value="Prześlij"
                                                class="btn-outline-info">
                                     </div>
                                 </form>

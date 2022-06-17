@@ -1,5 +1,6 @@
 {% extends 'admin/base_admin.html' %}
 {% block content %}
+{% include 'navbar_admin.html' %}
 <section class="vh-100" style="background-color: #eee;">
     <form method="POST" class="form-signin" style="color:white">
         <div class="container h-100">
@@ -12,9 +13,7 @@
                                     {% from "_formhelpers.html" import render_field %}
                                     {% include '_messages.html' %}
                                     {% if brands %}
-                                    <div class="text-center  p-2 h3 mb-3">{% if update_brand %} Zaktualizuj {% else
-                                        %}Dodaj {%
-                                        endif %} producenta
+                                    <div class="text-center  p-2 h3 mb-3">Prześlij
                                     </div>
                                     <form method=post>
                                         <div>

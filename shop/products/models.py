@@ -15,7 +15,7 @@ class Product(db.Model):
     image = db.Column(db.String(150), nullable=False, default='image1.jpg')
 
     def __repr__(self):
-        return '<Produkt: %r>' % self.name
+        return f'Produkt: {self.name}'
 
 
 class Brand(db.Model):
@@ -23,7 +23,7 @@ class Brand(db.Model):
     name = db.Column(db.String(30), unique=True, nullable=False)
 
     def __repr__(self):
-        return '<Brand %r>' % self.name
+        return f'Producent: {self.name}'
 
 
 db.create_all()

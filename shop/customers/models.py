@@ -1,12 +1,10 @@
 from shop import db, login_manager
-from datetime import datetime
 from flask_login import UserMixin
-import json
 
 
-@login_manager.user_loader
-def user_loader(user_id):
-    return Customer.query.get(user_id)
+# @login_manager.user_loader
+# def load_user(id):
+#     return Customer.query.filter_by(id=id).first()
 
 
 class Customer(db.Model, UserMixin):
@@ -21,7 +19,7 @@ class Customer(db.Model, UserMixin):
     zipcode = db.Column(db.String(50), unique=False)
 
     def __repr__(self):
-        return '<Klient %r>' % self.name
+        return f'Klient: {self.username}'
 
 
 class CustomerOrder(db.Model):

@@ -24,7 +24,7 @@
                     <td>{{loop.index}}</td>
                     <td><img src="{{url_for('static',filename='images/'+ product.image)}}" alt="{{product.name}}" width="50" height="45"></td>
                     <td>{{product.name}}</td>
-                    <form action="{{url_for('updatecart', code=key)}}" method="post">
+                    <form action="{{url_for('update_cart', code=key)}}" method="post">
                     <td>{{ product.price }} zł</td>
                     <td> <input type="number" name="quantity" min="1" max="10" value="{{product.quantity}}"> </td>
                     <td>{{product.discount}}</td>
@@ -42,7 +42,7 @@
                <td> <a href="#" class="btn btn-success">Zamów</a> </td>
                <td width="35%"></td>
                <td> <h5>Do zapłaty: {{grandtotal}} zł</h5></td>
-                <td> <a href="{{url_for('clearcart')}}" class="btn btn-danger btn-sm float-right mr-4"> Wyczyść koszyk</a> </td>
+                <td> <a href="{{url_for('clear_cart')}}" class="btn btn-danger btn-sm float-right mr-4"> Wyczyść koszyk</a> </td>
            </tr>
         </table>
     </div>

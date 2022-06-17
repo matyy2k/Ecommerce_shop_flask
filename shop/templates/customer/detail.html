@@ -29,7 +29,11 @@
                     <p class="product-description">{{ product.desc }}</p>
                     <h4 class="price">Cena: <span>{{ product.price }} zł</span></h4>
                     <div class="action">
-                        <button class="add-to-cart btn btn-default" type="button">Dodaj do koszyka</button>
+                        <form action="{{url_for('add_cart')}}" method="post">
+                            <input type="hidden" name="product_id" value="{{product.id}}">
+                            <button type="submit" class="btn btn-sm btn-warning float-right">Dodaj do koszyka</button>
+                            <input type="hidden" name="quantity" value="1" min="1" max="20">
+                        </form>
                     </div>
                 </div>
             </div>

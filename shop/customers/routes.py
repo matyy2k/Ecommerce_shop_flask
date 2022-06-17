@@ -1,10 +1,8 @@
-from flask import render_template, session, request, redirect, url_for, flash, current_app, make_response
-from flask_login import login_required, current_user, logout_user, login_user
-from shop import app, db, photos, bcrypt, login_manager
-from .forms import CustomerRegisterForm, customer_loginFrom
-from .model import Customer
-
-
+from flask import render_template, session, request, redirect, url_for, flash
+from flask_login import login_required, logout_user, login_user
+from shop import app, db, bcrypt
+from .forms import CustomerRegisterForm, CustomerLoginForm
+from .models import Customer
 
 
 @app.route('/customer/register', methods=['GET', 'POST'])
@@ -25,7 +23,7 @@ def customer_register():
 
 @app.route('/customer/login', methods=['GET', 'POST'])
 def customer_login():
-    form = customer_loginFrom()
+    form = CustomerLoginForm()
     if form.validate_on_submit():
         user = Customer.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
@@ -35,12 +33,12 @@ def customer_login():
             return redirect(next or url_for('home'))
         flash('Incorrect email and password', 'danger')
         return redirect(url_for('customer_login'))
-
     return render_template('customer/login.html', form=form)
 
 
 @app.route('/customer/logout')
 def customer_logout():
+    session.clear()
     logout_user()
     return redirect(url_for('home'))
 
