@@ -1,8 +1,32 @@
 from flask import render_template, session, request, redirect, url_for, flash
-from flask_login import login_required, logout_user, login_user
+from flask_login import login_required, logout_user, login_user, current_user
 from shop import app, db, bcrypt
 from .forms import CustomerRegisterForm, CustomerLoginForm
 from .models import Customer
+
+
+@app.route('/profile/<int:id>', methods=['GET', 'POST'])
+def profile(id):
+    form = CustomerRegisterForm(request.form)
+    user = Customer.query.get_or_404(id)
+    if request.method == "POST":
+        user.username = form.username.data
+        user.email = form.email.data
+        user.country = form.country.data
+        user.city = form.city.data
+        user.contact = form.contact.data
+        user.address = form.address.data
+        user.zipcode = form.zipcode.data
+        flash('Aktualizacja użytkownika udana', 'success')
+        db.session.commit()
+        return redirect(url_for('profile', id=current_user.id))
+    form.username.data = user.username
+    form.email.data = user.email
+    form.city.data = user.city
+    form.contact.data = user.contact
+    form.address.data = user.address
+    form.zipcode.data = user.zipcode
+    return render_template('customer/profile.html', form=form, user=user, title='Zaaktualizuj użytkownika')
 
 
 @app.route('/customer/register', methods=['GET', 'POST'])
@@ -14,9 +38,8 @@ def customer_register():
                             password=hash_password, country=form.country.data, city=form.city.data,
                             contact=form.contact.data, address=form.address.data, zipcode=form.zipcode.data)
         db.session.add(register)
-        flash(f'Welcome {form.username.data} Thank you for registering', 'success')
+        flash(f'Użytkownik {form.username.data} zarejestrowany.', 'success')
         db.session.commit()
-        login_user(register)
         return redirect(url_for('home'))
     return render_template('customer/register.html', form=form)
 
@@ -27,18 +50,18 @@ def customer_login():
     if form.validate_on_submit():
         user = Customer.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
+            session['user_type'] = 'customer'
             login_user(user)
-            flash('You are login now!', 'success')
+            flash('Jesteś zalogowany!', 'success')
             next = request.args.get('next')
             return redirect(next or url_for('home'))
-        flash('Incorrect email and password', 'danger')
+        flash('Niepoprawny login albo hasło', 'danger')
         return redirect(url_for('customer_login'))
     return render_template('customer/login.html', form=form)
 
 
 @app.route('/customer/logout')
 def customer_logout():
-    session.clear()
     logout_user()
     return redirect(url_for('home'))
 

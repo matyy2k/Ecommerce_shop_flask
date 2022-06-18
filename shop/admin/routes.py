@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, session
 from shop import app, db, bcrypt
 from .forms import RegistrationForm, LoginForm
 from .models import Admin
@@ -8,12 +8,10 @@ from flask_login import login_user, login_required
 from shop.customers.forms import CustomerRegisterForm
 
 
-
-
-
 @app.route('/admin')
 def admin():
     return render_template('admin/home_admin.html')
+
 
 @app.route('/moderator')
 def moderator():
@@ -47,7 +45,7 @@ def add_user():
         user = Admin(username=form.username.data, email=form.email.data,
                      password=hash_password, admin=form.admin.data, moderator=form.moderator.data)
         db.session.add(user)
-        flash(f'welcome {form.username.data} Thanks for registering', 'success')
+        flash(f'Rejestracja udana', 'success')
         db.session.commit()
         return redirect(url_for('users'))
     return render_template('admin/add_admin_moderator.html', form=form, title='Dodaj użytkownika')
@@ -60,14 +58,16 @@ def update_user(id):
     if request.method == "POST":
         user.username = form.username.data
         user.email = form.email.data
-        user.password = form.password.data
-        flash('The product was updated', 'success')
+        user.admin = form.admin.data
+        user.moderator = form.moderator.data
+        flash('Aktualizacja użytkownika udana', 'success')
         db.session.commit()
         return redirect(url_for('admin'))
     form.username.data = user.username
     form.email.data = user.email
-    form.password.data = user.password
-    return render_template('admin/add_admin_moderator.html', form=form, user=user, title='Zaaktualizuj użytkownika')
+    form.admin.data = user.admin
+    form.moderator.data = user.moderator
+    return render_template('admin/update_user.html', form=form, user=user, title='Zaaktualizuj użytkownika')
 
 
 @app.route('/delete_user/<int:id>', methods=['GET', 'POST'])
@@ -75,10 +75,10 @@ def delete_user(id):
     admins = Admin.query.get_or_404(id)
     if request.method == "POST":
         db.session.delete(admins)
-        flash(f"The brand {admins.username} was deleted from your database", "success")
+        flash(f"Użytkownik usunięty", "success")
         db.session.commit()
         return redirect(url_for('users'))
-    flash(f"The brand {admins.username} can't be  deleted from your database", "warning")
+    flash(f"Problem z usunięciem", "warning")
     return render_template('admin/users.html', admins=admins)
 
 
@@ -87,20 +87,17 @@ def update_cust(id):
     form = CustomerRegisterForm(request.form)
     user = Customer.query.get_or_404(id)
     if request.method == "POST":
-        hash_password = bcrypt.generate_password_hash(form.password.data)
         user.username = form.username.data
         user.email = form.email.data
-        user.password = form.password.data
         user.country = form.country.data
         user.city = form.city.data
         user.contact = form.contact.data
         user.address = form.address.data
         user.zipcode = form.zipcode.data
-        flash('The product was updated', 'success')
+        flash('Aktualizacja użytkownika udana', 'success')
         db.session.commit()
         return redirect(url_for('admin'))
     form.username.data = user.username
-    form.password.data = user.password
     form.email.data = user.email
     form.city.data = user.city
     form.contact.data = user.contact
@@ -111,39 +108,45 @@ def update_cust(id):
 
 @app.route('/delete_cust/<int:id>', methods=['GET', 'POST'])
 def delete_cust(id):
-    customer = Admin.query.get_or_404(id)
+    customer = Customer.query.get_or_404(id)
     if request.method == "POST":
         db.session.delete(customer)
-        flash(f"The brand {customer.username} was deleted from your database", "success")
+        flash(f"Użytkownik usunięty", "success")
         db.session.commit()
         return redirect(url_for('users'))
-    flash(f"The brand {customer.username} can't be  deleted from your database", "warning")
+    flash(f"Problem z usunięciem", "warning")
     return render_template('admin/users.html', customer=customer)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
-    if form.validate_on_submit():
+    if request.method == "POST" and form.validate():
         hash_password = bcrypt.generate_password_hash(form.password.data)
-        register = Admin(username=form.username.data, email=form.email.data,
-                            password=hash_password)
-        db.session.add(register)
-        flash(f'Welcome {form.username.data} Thank you for registering', 'success')
+        user = Admin(username=form.username.data, email=form.email.data,
+                     password=hash_password, admin=form.admin.data, moderator=form.moderator.data)
+        db.session.add(user)
+        flash(f'Użytkownik {form.username.data} zarejestrowany.', 'success')
         db.session.commit()
         return redirect(url_for('admin'))
-    return render_template('admin/register.html', form=form)
+    return render_template('admin/register.html', title='Register user', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    admin = Admin.query.filter(Admin.admin).one()
+    print(admin)
     if request.method == 'POST' and form.validate():
         user = Admin.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
+            session['user_type'] = 'admin'
             login_user(user)
-            flash('You are login now!', 'success')
-            return redirect(url_for('admin'))
-        flash('Incorrect email and password', 'danger')
+            flash('Jesteś zalogowany', 'success')
+            if user == admin:
+                return redirect(url_for('admin'))
+            else:
+                return redirect(url_for('moderator'))
+        flash('Niepoprawny login albo hasło', 'danger')
         return redirect(url_for('login'))
     return render_template('admin/login.html', form=form)

@@ -1,6 +1,10 @@
 {% extends 'admin/base_admin.html' %}
 {% block content %}
+{% if current_user.moderator %}
+{% include 'navbar_moderator.html' %}
+{% elif current_user.admin %}
 {% include 'navbar_admin.html' %}
+{% endif %}
 <section class="vh-100" style="background-color: #eee;">
     <div class="container h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">

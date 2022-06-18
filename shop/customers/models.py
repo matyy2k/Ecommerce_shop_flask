@@ -2,11 +2,6 @@ from shop import db, login_manager
 from flask_login import UserMixin
 
 
-# @login_manager.user_loader
-# def load_user(id):
-#     return Customer.query.filter_by(id=id).first()
-
-
 class Customer(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True)
@@ -19,7 +14,7 @@ class Customer(db.Model, UserMixin):
     zipcode = db.Column(db.String(50), unique=False)
 
     def __repr__(self):
-        return f'Klient: {self.username}'
+        return '<Klient %r>' % self.name
 
 
 class CustomerOrder(db.Model):

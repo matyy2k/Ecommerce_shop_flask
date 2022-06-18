@@ -92,7 +92,7 @@ def delete_item(id):
 
 
 @app.route('/clear_cart')
-def clearcart():
+def clear_cart():
     try:
         session.pop('Shoppingcart', None)
         return redirect(url_for('home'))

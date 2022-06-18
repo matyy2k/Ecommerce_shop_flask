@@ -1,6 +1,10 @@
 {% extends 'admin/base_admin.html' %}
 {% block content %}
+{% if current_user.moderator %}
+{% include 'navbar_moderator.html' %}
+{% elif current_user.admin %}
 {% include 'navbar_admin.html' %}
+{% endif %}
 <div class="container">
     {% include '_messages.html' %}
     <table class="table table-striped">

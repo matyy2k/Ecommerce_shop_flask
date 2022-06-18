@@ -1,0 +1,66 @@
+{% extends 'customer/base_customer.html' %}
+{% block title %}
+Profil
+{% endblock %}
+
+{% block content %}
+{% from '_formhelpers.html' import render_field %}
+{% include 'navbar_customer.html' %}
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-3 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5"
+                                                                                         width="150px"
+                                                                                         src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span
+                    class="font-weight-bold">{{ current_user.username }}</span><span> </span></div>
+        </div>
+        <div class="col-md-5 border-right">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">Ustawienia profilu</h4>
+                </div>
+                <form class="mx-1 mx-md-4" method="post" enctype="multipart/form-data">
+                    <div class="row mt-2">
+                        {{ render_field(form.username, class="form-control") }}
+                        {{ render_field(form.email, class="form-control") }}
+                        {{ render_field(form.country, class="form-control") }}
+                        {{ render_field(form.city, class="form-control") }}
+                        {{ render_field(form.contact, class="form-control") }}
+                        {{ render_field(form.address, class="form-control") }}
+                        {{ render_field(form.zipcode, class="form-control") }}
+                    </div>
+                    <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                        <input type="submit"
+                               value="Prześlij"
+                               class="btn-outline-info">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center experience"><span>Informacje</span><span
+                        class="border px-3 p-1 add-experience"><i></i>&nbsp;</span></div>
+                <br>
+                <div class="col-md-12"><label class="labels">Nazwa</label><br>{{ current_user.username }}</div>
+                <br>
+                <div class="col-md-12"><label class="labels">Email</label><br>{{ current_user.email }}</div>
+                <br>
+                <div class="col-md-12"><label class="labels">Państwo</label><br>{{ current_user.country }}</div>
+                <br>
+                <div class="col-md-12"><label class="labels">Miasto</label><br>{{ current_user.city }}</div>
+                <br>
+                <div class="col-md-12"><label class="labels">Numer kontaktowy</label><br>{{ current_user.contact}}</div>
+                <br>
+                <div class="col-md-12"><label class="labels">Adres</label><br>{{ current_user.address}}</div>
+                <br>
+                <div class="col-md-12"><label class="labels">Kod pocztowy</label><br>{{ current_user.zipcode}}</div>
+                <br>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

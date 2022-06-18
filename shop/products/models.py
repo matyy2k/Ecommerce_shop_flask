@@ -8,11 +8,9 @@ class Product(db.Model):
     discount = db.Column(db.Integer, default=0)
     stock = db.Column(db.Integer, nullable=False)
     desc = db.Column(db.Text, nullable=False)
-
     brand_id = db.Column(db.Integer, db.ForeignKey('brand.id'), nullable=False)
     brand = db.relationship('Brand', backref=db.backref('brands', lazy=True))
-
-    image = db.Column(db.String(150), nullable=False, default='image1.jpg')
+    image = db.Column(db.String(150), nullable=False, default='image.jpg')
 
     def __repr__(self):
         return f'Produkt: {self.name}'

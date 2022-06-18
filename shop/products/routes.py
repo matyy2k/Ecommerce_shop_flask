@@ -38,7 +38,7 @@ def add_brand():
         getbrand = request.form.get('brand')
         brand = Brand(name=getbrand)
         db.session.add(brand)
-        flash(f'The brand {getbrand} was added to your database', 'success')
+        flash(f'Pomyślnie dodano producenta', 'success')
         db.session.commit()
         return redirect(url_for('add_brand'))
     return render_template('products/add_brand.html', title='Dodaj producenta', brands='brands')
@@ -47,13 +47,12 @@ def add_brand():
 @app.route('/update_brand/<int:id>', methods=['GET', 'POST'])
 def update_brand(id):
     if 'email' not in session:
-        flash('Login first please', 'danger')
+        flash('Najpierw się zaloguj', 'danger')
         return redirect(url_for('login'))
     update_brand = Brand.query.get_or_404(id)
     brand = request.form.get('brand')
     if request.method == "POST":
         update_brand.name = brand
-        flash(f'The brand {update_brand.name} was changed to {brand}', 'success')
         db.session.commit()
         return redirect(url_for('brands'))
     return render_template('products/add_brand.html', title='Udate brand', brands='brands', update_brand=update_brand)
@@ -64,10 +63,10 @@ def delete_brand(id):
     brand = Brand.query.get_or_404(id)
     if request.method == "POST":
         db.session.delete(brand)
-        flash(f"The brand {brand.name} was deleted from your database", "success")
+        flash(f"Usunięto producenta", "success")
         db.session.commit()
         return redirect(url_for('brands'))
-    flash(f"The brand {brand.name} can't be  deleted from your database", "warning")
+    flash(f"Błąd przy usuwaniu producenta", "warning")
     return redirect(url_for('admin'))
 
 
@@ -86,7 +85,7 @@ def add_product():
         add_product = Product(name=name, price=price, discount=discount, stock=stock, desc=desc,
                               brand_id=brand, image=image)
         db.session.add(add_product)
-        flash(f'The product {name} was added in database', 'success')
+        flash(f'Produkt dodany', 'success')
         db.session.commit()
         return redirect(url_for('product'))
     return render_template('products/add_product.html', form=form, title='Prześlij', brands=brands)
@@ -133,7 +132,7 @@ def delete_product(id):
             print(e)
         db.session.delete(product)
         db.session.commit()
-        flash(f'The product {product.name} was delete from your record', 'success')
+        flash(f'Usunięto produkt', 'success')
         return redirect(url_for('product'))
-    flash(f'Can not delete the product', 'success')
+    flash(f'Błąd przy usuwaniu', 'success')
     return redirect(url_for('admin'))

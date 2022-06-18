@@ -11,6 +11,8 @@ class RegistrationForm(FlaskForm):
         validators.EqualTo('confirm', message='Hasła muszą być takie same')
     ])
     confirm = PasswordField('Powtórz hasło')
+    admin = StringField('Admin', default=True)
+    moderator = StringField('Moderator', default=False)
     submit = SubmitField('Zarejestruj')
 
     def validate_username(self, field):
