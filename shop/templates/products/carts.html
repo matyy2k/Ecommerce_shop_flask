@@ -46,7 +46,7 @@ Koszyk
             </table>
             <table class="table table-sm">
                 <tr>
-                    <td><a href="#" class="btn btn-success">Zamów</a></td>
+                    <td><a href="{{ url_for('order') }}" class="btn btn-success">Zamów</a></td>
                     <td width="35%"></td>
                     <td><h5>Do zapłaty: {{ subtotal }} zł</h5></td>
                     <td><a href="{{url_for('clear_cart')}}" class="btn btn-danger btn-sm float-right mr-4"> Wyczyść

@@ -1,0 +1,30 @@
+{% extends "customer/base_customer.html" %}
+{% block title %}
+Zamówienia
+{% endblock %}
+{% block content %}
+{% include 'navbar_customer.html' %}
+<div class="container">
+    {% include '_messages.html' %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nazwa</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if orders %}
+        {% for order in orders %}
+        <tr>
+            <th scope="row">{{ loop.index }}</th>
+            <td>{{ order.name }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

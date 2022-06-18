@@ -17,5 +17,10 @@ class Customer(db.Model, UserMixin):
         return '<Klient %r>' % self.name
 
 
+class CustomerOrder(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    discount = db.Column(db.Integer, default=0)
+
 
 db.create_all()

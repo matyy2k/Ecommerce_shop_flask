@@ -110,7 +110,7 @@ def update_product(id):
                 product.image = photos.save(request.files.get('image'), name=secrets.token_hex(10) + ".")
             except:
                 product.image = photos.save(request.files.get('image'), name=secrets.token_hex(10) + ".")
-        flash('The product was updated', 'success')
+        flash('Zaktualizowano', 'success')
         db.session.commit()
         return redirect(url_for('admin'))
     form.name.data = product.name

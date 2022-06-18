@@ -41,19 +41,6 @@ def add_cart():
         return redirect(request.referrer)
 
 
-# @app.route('/carts')
-# def get_cart():
-#     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
-#         return redirect(url_for('home'))
-#     subtotal = 0
-#     for key, product in session['Shoppingcart'].items():
-#         discount = (product['discount'] / 100) * float(product['price']) * float(product['quantity'])
-#         subtotal += float(product['price']) * int(product['quantity'])
-#         subtotal -= discount
-#         subtotal = format(subtotal, '.2f')
-#     return render_template('products/carts.html', subtotal=subtotal, brands=brands(), discount=discount)
-
-# dobra wersja
 @app.route('/carts')
 def get_cart():
     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
@@ -73,14 +60,12 @@ def update_cart(code):
         return redirect(url_for('home'))
     if request.method == "POST":
         quantity = request.form.get('quantity')
-        color = request.form.get('color')
         try:
             session.modified = True
             for key, item in session['Shoppingcart'].items():
                 if int(key) == code:
                     item['quantity'] = quantity
-                    item['color'] = color
-                    flash('Item is updated!')
+                    flash('Zaktualizowano')
                     return redirect(url_for('get_cart'))
         except Exception as e:
             print(e)

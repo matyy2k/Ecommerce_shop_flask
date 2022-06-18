@@ -30,6 +30,7 @@ Strona główna
                     {% if current_user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link">Witaj, {{ current_user.username }}</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('profile', id=current_user.id) }}">Profil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('orders') }}">Zamówienia</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('customer_logout') }}">Wyloguj</a></li>
                     {% else %}
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('customer_login') }}">Logowanie</a></li>

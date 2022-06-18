@@ -2,7 +2,7 @@ from flask import render_template, session, request, redirect, url_for, flash
 from flask_login import login_required, logout_user, login_user, current_user
 from shop import app, db, bcrypt
 from .forms import CustomerRegisterForm, CustomerLoginForm
-from .models import Customer
+from .models import Customer, CustomerOrder
 
 
 @app.route('/profile/<int:id>', methods=['GET', 'POST'])
@@ -75,9 +75,16 @@ def updateshoppingcart():
 
 @app.route('/order')
 def order():
-    order = CustomerOrder(customer_id=id, order=session['Shoppingcart'])
-    db.session.add(order)
-    db.session.commit()
-    session.pop('Shoppingcart')
-    flash('Your order has been sent successfully', 'success')
-    return redirect(url_for('home'))
+    if current_user.is_authenticated:
+        name = CustomerOrder(name=session['Shoppingcart']['1']['name'])
+        db.session.add(name)
+        db.session.commit()
+        flash('Zamówienie udane', 'success')
+        return redirect(url_for('orders'))
+
+
+@app.route('/orders')
+def orders():
+    form = CustomerOrder()
+    orders = CustomerOrder.query.all()
+    return render_template('customer/orders.html', form=form, orders=orders)

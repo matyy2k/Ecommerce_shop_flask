@@ -1,11 +1,13 @@
 from wtforms import StringField, PasswordField, SubmitField, validators, ValidationError
 from flask_wtf import FlaskForm
 from .models import Customer
+import re
 
 
 class CustomerRegisterForm(FlaskForm):
     username = StringField('Nazwa', [validators.Length(min=4, max=25)])
-    email = StringField('Adres email', [validators.Length(min=6, max=35)])
+    email = StringField('Adres email', [validators.Regexp('(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9]+\.[a-zA-Z0-9.]*\.*['
+                                                          'com|org|edu]{3}$)', message="Mail nie spełnia wymagań")])
     password = PasswordField('Hasło', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Hasła muszą być takie same')
