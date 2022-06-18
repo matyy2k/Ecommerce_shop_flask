@@ -135,17 +135,15 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    admin = Admin.query.filter(Admin.admin).one()
-    print(admin)
     if request.method == 'POST' and form.validate():
         user = Admin.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             session['user_type'] = 'admin'
             login_user(user)
             flash('Jesteś zalogowany', 'success')
-            if user == admin:
+            if user.admin == '1':
                 return redirect(url_for('admin'))
-            else:
+            elif user.admin == '0':
                 return redirect(url_for('moderator'))
         flash('Niepoprawny login albo hasło', 'danger')
         return redirect(url_for('login'))

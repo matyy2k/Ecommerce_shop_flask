@@ -1,9 +1,12 @@
 {% extends 'admin/base_admin.html' %}
+{% block title %}
+Dodaj/Edytuj produkt
+{% endblock %}
 {% block content %}
-{% if current_user.moderator %}
-{% include 'navbar_moderator.html' %}
-{% elif current_user.admin %}
+{% if current_user.admin == '1' %}
 {% include 'navbar_admin.html' %}
+{% elif current_user.moderator == '1' %}
+{% include 'navbar_moderator.html' %}
 {% endif %}
 <section class="vh-100" style="background-color: #eee;">
     <div class="container h-100">

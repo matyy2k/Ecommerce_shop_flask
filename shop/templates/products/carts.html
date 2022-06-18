@@ -1,12 +1,15 @@
 {% extends 'customer/home_customer.html' %}
+{% block title %}
+Koszyk
+{% endblock %}
 {% block content %}
 {% include 'navbar_customer.html' %}
 <div class="container mt-4">
     {% include '_messages.html' %}
     <div class="row">
         <div class="col-md-12">
-        <table class="table table-sm">
-            <thead>
+            <table class="table table-sm">
+                <thead>
                 <th>ID</th>
                 <th>Zdjęcie</th>
                 <th>Nazwa</th>
@@ -16,36 +19,41 @@
                 <th>Razem</th>
                 <th>Aktualizuj koszyk</th>
                 <th>Usuń</th>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 {% for key, product in session['Shoppingcart'].items() %}
-                {% set discount = (product.discount/100) * product.price %}
+                {% set discount =(product.discount/100) * product.price|float * product.quantity|float %}
                 <tr>
                     <td>{{loop.index}}</td>
                     <td><img src="{{url_for('static',filename='images/'+ product.image)}}" alt="{{product.name}}" width="50" height="45"></td>
                     <td>{{product.name}}</td>
                     <form action="{{url_for('update_cart', code=key)}}" method="post">
-                    <td>{{ product.price }} zł</td>
+                    <td>${{"%.2f"|format(product.price)}}</td>
                     <td> <input type="number" name="quantity" min="1" max="10" value="{{product.quantity}}"> </td>
-                    <td>{{product.discount}}</td>
+                    {% if product.discount  %}
+                    <td>{{product.discount}} %</td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
                     {% set subtotal = product.quantity|int * product.price|float  %}
-                    <td>{{ subtotal - discount|round(1,'floor') }} zł</td>
+                    <td>${{"%.2f"|format(subtotal - discount|round(1,'floor')) }}</td>
                     <td><button type="submit" class="btn btn-sm btn-info">X</button> </td>
                 </form>
                     <td> <a href="{{url_for('delete_item', id=key)}}" class="btn btn-sm btn-danger">X</a></td>
                 </tr>
                 {% endfor %}
-            </tbody>
-        </table>
-        <table class="table table-sm">
-           <tr>
-               <td> <a href="#" class="btn btn-success">Zamów</a> </td>
-               <td width="35%"></td>
-               <td> <h5>Do zapłaty: {{grandtotal}} zł</h5></td>
-                <td> <a href="{{url_for('clear_cart')}}" class="btn btn-danger btn-sm float-right mr-4"> Wyczyść koszyk</a> </td>
-           </tr>
-        </table>
+                </tbody>
+            </table>
+            <table class="table table-sm">
+                <tr>
+                    <td><a href="#" class="btn btn-success">Zamów</a></td>
+                    <td width="35%"></td>
+                    <td><h5>Do zapłaty: {{ subtotal }} zł</h5></td>
+                    <td><a href="{{url_for('clear_cart')}}" class="btn btn-danger btn-sm float-right mr-4"> Wyczyść
+                        koszyk</a></td>
+                </tr>
+            </table>
+        </div>
     </div>
-  </div>
 </div>
 {% endblock content %}

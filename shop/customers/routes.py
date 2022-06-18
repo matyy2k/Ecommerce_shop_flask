@@ -71,3 +71,13 @@ def updateshoppingcart():
         session.modified = True
         del shopping['image']
     return updateshoppingcart
+
+
+@app.route('/order')
+def order():
+    order = CustomerOrder(customer_id=id, order=session['Shoppingcart'])
+    db.session.add(order)
+    db.session.commit()
+    session.pop('Shoppingcart')
+    flash('Your order has been sent successfully', 'success')
+    return redirect(url_for('home'))

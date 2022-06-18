@@ -1,9 +1,12 @@
 {% extends 'admin/base_admin.html' %}
+{% block title %}
+Producent
+{% endblock %}
 {% block content %}
-{% if current_user.moderator %}
-{% include 'navbar_moderator.html' %}
-{% elif current_user.admin %}
+{% if current_user.admin == '1' %}
 {% include 'navbar_admin.html' %}
+{% elif current_user.moderator == '1' %}
+{% include 'navbar_moderator.html' %}
 {% endif %}
 <div class="container">
     {% include '_messages.html' %}

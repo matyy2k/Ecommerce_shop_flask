@@ -16,12 +16,11 @@ def add_cart():
     try:
         product_id = request.form.get('product_id')
         quantity = int(request.form.get('quantity'))
-        color = request.form.get('colors')
         product = Product.query.filter_by(id=product_id).first()
 
         if request.method == "POST":
             DictItems = {product_id: {'name': product.name, 'price': float(product.price), 'discount': product.discount,
-                                      'color': color, 'quantity': quantity, 'image': product.image}}
+                                      'quantity': quantity, 'image': product.image}}
             if 'Shoppingcart' in session:
                 print(session['Shoppingcart'])
                 if product_id in session['Shoppingcart']:
@@ -42,18 +41,30 @@ def add_cart():
         return redirect(request.referrer)
 
 
+# @app.route('/carts')
+# def get_cart():
+#     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
+#         return redirect(url_for('home'))
+#     subtotal = 0
+#     for key, product in session['Shoppingcart'].items():
+#         discount = (product['discount'] / 100) * float(product['price']) * float(product['quantity'])
+#         subtotal += float(product['price']) * int(product['quantity'])
+#         subtotal -= discount
+#         subtotal = format(subtotal, '.2f')
+#     return render_template('products/carts.html', subtotal=subtotal, brands=brands(), discount=discount)
+
+# dobra wersja
 @app.route('/carts')
-def getCart():
+def get_cart():
     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
         return redirect(url_for('home'))
     subtotal = 0
-    grandtotal = 0
     for key, product in session['Shoppingcart'].items():
-        discount = (product['discount'] / 100) * float(product['price'])
+        discount = (product['discount'] / 100) * float(product['price']) * float(product['quantity'])
         subtotal += float(product['price']) * int(product['quantity'])
         subtotal -= discount
-        grandtotal = float("%.2f" % (subtotal))
-    return render_template('products/carts.html', grandtotal=grandtotal, brands=brands())
+        subtotal = float("%.2f" % subtotal)
+    return render_template('products/carts.html', brands=brands(), subtotal=subtotal)
 
 
 @app.route('/update_cart/<int:code>', methods=['POST'])
@@ -70,10 +81,10 @@ def update_cart(code):
                     item['quantity'] = quantity
                     item['color'] = color
                     flash('Item is updated!')
-                    return redirect(url_for('getCart'))
+                    return redirect(url_for('get_cart'))
         except Exception as e:
             print(e)
-            return redirect(url_for('getCart'))
+            return redirect(url_for('get_cart'))
 
 
 @app.route('/delete_item/<int:id>')
@@ -85,10 +96,10 @@ def delete_item(id):
         for key, item in session['Shoppingcart'].items():
             if int(key) == id:
                 session['Shoppingcart'].pop(key, None)
-                return redirect(url_for('getCart'))
+                return redirect(url_for('get_cart'))
     except Exception as e:
         print(e)
-        return redirect(url_for('getCart'))
+        return redirect(url_for('get_cart'))
 
 
 @app.route('/clear_cart')

@@ -2,7 +2,9 @@ from flask import Flask, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
+from flask_mail import Mail, Message
 import os
+from itsdangerous import URLSafeSerializer, SignatureExpired
 
 from flask_login import LoginManager
 from flask_migrate import Migrate
@@ -17,6 +19,10 @@ app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(basedir, 'static/images')
 photos = UploadSet('photos', IMAGES)
 configure_uploads(app, photos)
 patch_request_class(app)
+
+mail = Mail(app)
+
+s = URLSafeSerializer('secret')
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
@@ -55,4 +61,3 @@ from shop.products import routes
 from shop.admin import routes
 from shop.carts import carts
 from shop.customers import routes
-# from shop.moderator import routes
