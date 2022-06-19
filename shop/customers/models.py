@@ -20,6 +20,7 @@ class Customer(db.Model, UserMixin):
 class CustomerOrder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
+    customer_id = db.Column(db.Integer, unique=False, nullable=False)
     discount = db.Column(db.Integer, default=0)
 
 

@@ -21,14 +21,14 @@ Koszyk
                 <th>Usuń</th>
                 </thead>
                 <tbody>
-                {% for key, product in session['Shoppingcart'].items() %}
+                {% for key, product in session['shopping_cart'].items() %}
                 {% set discount =(product.discount/100) * product.price|float * product.quantity|float %}
                 <tr>
                     <td>{{loop.index}}</td>
                     <td><img src="{{url_for('static',filename='images/'+ product.image)}}" alt="{{product.name}}" width="50" height="45"></td>
                     <td>{{product.name}}</td>
                     <form action="{{url_for('update_cart', code=key)}}" method="post">
-                    <td>${{"%.2f"|format(product.price)}}</td>
+                    <td>{{"%.2f"|format(product.price)}} zł</td>
                     <td> <input type="number" name="quantity" min="1" max="10" value="{{product.quantity}}"> </td>
                     {% if product.discount  %}
                     <td>{{product.discount}} %</td>
@@ -36,7 +36,7 @@ Koszyk
                     <td></td>
                     {% endif %}
                     {% set subtotal = product.quantity|int * product.price|float  %}
-                    <td>${{"%.2f"|format(subtotal - discount|round(1,'floor')) }}</td>
+                    <td>{{"%.2f"|format(subtotal - discount|round(1,'floor')) }} zł</td>
                     <td><button type="submit" class="btn btn-sm btn-info">X</button> </td>
                 </form>
                     <td> <a href="{{url_for('delete_item', id=key)}}" class="btn btn-sm btn-danger">X</a></td>

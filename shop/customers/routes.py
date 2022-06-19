@@ -6,6 +6,7 @@ from .models import Customer, CustomerOrder
 
 
 @app.route('/profile/<int:id>', methods=['GET', 'POST'])
+@login_required
 def profile(id):
     form = CustomerRegisterForm(request.form)
     user = Customer.query.get_or_404(id)
@@ -66,17 +67,12 @@ def customer_logout():
     return redirect(url_for('home'))
 
 
-def updateshoppingcart():
-    for key, shopping in session['Shoppingcart'].items():
-        session.modified = True
-        del shopping['image']
-    return updateshoppingcart
-
-
 @app.route('/order')
+@login_required
 def order():
     if current_user.is_authenticated:
-        name = CustomerOrder(name=session['Shoppingcart']['1']['name'])
+        customer_id = current_user.id
+        name = CustomerOrder(customer_id=customer_id, name=session['shopping_cart']['1']['name'])
         db.session.add(name)
         db.session.commit()
         flash('Zamówienie udane', 'success')
@@ -84,7 +80,8 @@ def order():
 
 
 @app.route('/orders')
+@login_required
 def orders():
     form = CustomerOrder()
-    orders = CustomerOrder.query.all()
+    orders = CustomerOrder.query.filter_by(customer_id=current_user.id)
     return render_template('customer/orders.html', form=form, orders=orders)

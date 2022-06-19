@@ -4,54 +4,91 @@ from .forms import RegistrationForm, LoginForm
 from .models import Admin
 from shop.products.models import Product, Brand
 from shop.customers.models import Customer
-from flask_login import login_user, login_required
+from flask_login import login_user, login_required, current_user
 from shop.customers.forms import CustomerRegisterForm
 
 
 @app.route('/admin')
+@login_required
 def admin():
-    return render_template('admin/home_admin.html')
+    if current_user.is_authenticated:
+        try:
+            if current_user.country:
+                return redirect('login')
+        except:
+            return render_template('admin/home_admin.html')
 
 
 @app.route('/moderator')
+@login_required
 def moderator():
-    return render_template('moderator/home_moderator.html')
+    if current_user.is_authenticated:
+        try:
+            if current_user.country:
+                return redirect('login')
+        except:
+            return render_template('moderator/home_moderator.html')
 
 
 @app.route('/products')
+@login_required
 def product():
-    products = Product.query.all()
-    return render_template('admin/products.html', products=products)
+    if current_user.is_authenticated:
+        try:
+            if current_user.country:
+                return redirect('login')
+        except:
+            products = Product.query.all()
+            return render_template('admin/products.html', products=products)
 
 
 @app.route('/brands')
+@login_required
 def brands():
-    brands = Brand.query.order_by(Brand.id.desc()).all()
-    return render_template('admin/brand.html', title='brands', brands=brands)
+    if current_user.is_authenticated:
+        try:
+            if current_user.country:
+                return redirect('login')
+        except:
+            brands = Brand.query.order_by(Brand.id.desc()).all()
+            return render_template('admin/brand.html', title='brands', brands=brands)
 
 
 @app.route('/users')
+@login_required
 def users():
-    admins = Admin.query.all()
-    customers = Customer.query.all()
-    return render_template('admin/users.html', admins=admins, customers=customers)
+    if current_user.is_authenticated:
+        try:
+            if current_user.country or current_user.moderator:
+                return redirect('login')
+        except:
+            admins = Admin.query.all()
+            customers = Customer.query.all()
+            return render_template('admin/users.html', admins=admins, customers=customers)
 
 
 @app.route('/add_user', methods=['GET', 'POST'])
+@login_required
 def add_user():
-    form = RegistrationForm()
-    if request.method == "POST":
-        hash_password = bcrypt.generate_password_hash(form.password.data)
-        user = Admin(username=form.username.data, email=form.email.data,
-                     password=hash_password, admin=form.admin.data, moderator=form.moderator.data)
-        db.session.add(user)
-        flash(f'Rejestracja udana', 'success')
-        db.session.commit()
-        return redirect(url_for('users'))
-    return render_template('admin/add_admin_moderator.html', form=form, title='Dodaj użytkownika')
+    if current_user.is_authenticated or current_user.moderator:
+        try:
+            if current_user.country:
+                return redirect('login')
+        except:
+            form = RegistrationForm()
+            if request.method == "POST":
+                hash_password = bcrypt.generate_password_hash(form.password.data)
+                user = Admin(username=form.username.data, email=form.email.data,
+                             password=hash_password, admin=form.admin.data, moderator=form.moderator.data)
+                db.session.add(user)
+                flash(f'Rejestracja udana', 'success')
+                db.session.commit()
+                return redirect(url_for('users'))
+            return render_template('admin/add_admin_moderator.html', form=form, title='Dodaj użytkownika')
 
 
 @app.route('/update_user/<int:id>', methods=['GET', 'POST'])
+@login_required
 def update_user(id):
     form = RegistrationForm(request.form)
     user = Admin.query.get_or_404(id)
@@ -71,18 +108,25 @@ def update_user(id):
 
 
 @app.route('/delete_user/<int:id>', methods=['GET', 'POST'])
+@login_required
 def delete_user(id):
-    admins = Admin.query.get_or_404(id)
-    if request.method == "POST":
-        db.session.delete(admins)
-        flash(f"Użytkownik usunięty", "success")
-        db.session.commit()
-        return redirect(url_for('users'))
-    flash(f"Problem z usunięciem", "warning")
-    return render_template('admin/users.html', admins=admins)
+    if current_user.is_authenticated or current_user.moderator:
+        try:
+            if current_user.country:
+                return redirect('login')
+        except:
+            admins = Admin.query.get_or_404(id)
+            if request.method == "POST":
+                db.session.delete(admins)
+                flash(f"Użytkownik usunięty", "success")
+                db.session.commit()
+                return redirect(url_for('users'))
+            flash(f"Problem z usunięciem", "warning")
+            return render_template('admin/users.html', admins=admins)
 
 
 @app.route('/update_cust/<int:id>', methods=['GET', 'POST'])
+@login_required
 def update_cust(id):
     form = CustomerRegisterForm(request.form)
     user = Customer.query.get_or_404(id)
@@ -107,15 +151,21 @@ def update_cust(id):
 
 
 @app.route('/delete_cust/<int:id>', methods=['GET', 'POST'])
+@login_required
 def delete_cust(id):
-    customer = Customer.query.get_or_404(id)
-    if request.method == "POST":
-        db.session.delete(customer)
-        flash(f"Użytkownik usunięty", "success")
-        db.session.commit()
-        return redirect(url_for('users'))
-    flash(f"Problem z usunięciem", "warning")
-    return render_template('admin/users.html', customer=customer)
+    if current_user.is_authenticated:
+        try:
+            if current_user.country:
+                return redirect('login')
+        except:
+            customer = Customer.query.get_or_404(id)
+            if request.method == "POST":
+                db.session.delete(customer)
+                flash(f"Użytkownik usunięty", "success")
+                db.session.commit()
+                return redirect(url_for('users'))
+            flash(f"Problem z usunięciem", "warning")
+            return render_template('admin/users.html', customer=customer)
 
 
 @app.route('/register', methods=['GET', 'POST'])

@@ -4,7 +4,7 @@ from shop.products.models import Product
 from shop.products.routes import brands
 
 
-def MagerDicts(dict1, dict2):
+def merge(dict1, dict2):
     if isinstance(dict1, list) and isinstance(dict2, list):
         return dict1 + dict2
     if isinstance(dict1, dict) and isinstance(dict2, dict):
@@ -19,20 +19,20 @@ def add_cart():
         product = Product.query.filter_by(id=product_id).first()
 
         if request.method == "POST":
-            DictItems = {product_id: {'name': product.name, 'price': float(product.price), 'discount': product.discount,
+            dict_items = {product_id: {'name': product.name, 'price': float(product.price), 'discount': product.discount,
                                       'quantity': quantity, 'image': product.image}}
-            if 'Shoppingcart' in session:
-                print(session['Shoppingcart'])
-                if product_id in session['Shoppingcart']:
-                    for key, item in session['Shoppingcart'].items():
+            if 'shopping_cart' in session:
+                print(session['shopping_cart'])
+                if product_id in session['shopping_cart']:
+                    for key, item in session['shopping_cart'].items():
                         if int(key) == int(product_id):
                             session.modified = True
                             item['quantity'] += 1
                 else:
-                    session['Shoppingcart'] = MagerDicts(session['Shoppingcart'], DictItems)
+                    session['shopping_cart'] = merge(session['shopping_cart'], dict_items)
                     return redirect(request.referrer)
             else:
-                session['Shoppingcart'] = DictItems
+                session['shopping_cart'] = dict_items
                 return redirect(request.referrer)
 
     except Exception as e:
@@ -43,10 +43,10 @@ def add_cart():
 
 @app.route('/carts')
 def get_cart():
-    if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
+    if 'shopping_cart' not in session or len(session['shopping_cart']) <= 0:
         return redirect(url_for('home'))
     subtotal = 0
-    for key, product in session['Shoppingcart'].items():
+    for key, product in session['shopping_cart'].items():
         discount = (product['discount'] / 100) * float(product['price']) * float(product['quantity'])
         subtotal += float(product['price']) * int(product['quantity'])
         subtotal -= discount
@@ -56,13 +56,13 @@ def get_cart():
 
 @app.route('/update_cart/<int:code>', methods=['POST'])
 def update_cart(code):
-    if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
+    if 'shopping_cart' not in session or len(session['shopping_cart']) <= 0:
         return redirect(url_for('home'))
     if request.method == "POST":
         quantity = request.form.get('quantity')
         try:
             session.modified = True
-            for key, item in session['Shoppingcart'].items():
+            for key, item in session['shopping_cart'].items():
                 if int(key) == code:
                     item['quantity'] = quantity
                     flash('Zaktualizowano')
@@ -74,13 +74,13 @@ def update_cart(code):
 
 @app.route('/delete_item/<int:id>')
 def delete_item(id):
-    if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
+    if 'shopping_cart' not in session or len(session['shopping_cart']) <= 0:
         return redirect(url_for('home'))
     try:
         session.modified = True
-        for key, item in session['Shoppingcart'].items():
+        for key, item in session['shopping_cart'].items():
             if int(key) == id:
-                session['Shoppingcart'].pop(key, None)
+                session['shopping_cart'].pop(key, None)
                 return redirect(url_for('get_cart'))
     except Exception as e:
         print(e)
@@ -90,7 +90,7 @@ def delete_item(id):
 @app.route('/clear_cart')
 def clear_cart():
     try:
-        session.pop('Shoppingcart', None)
+        session.pop('shopping_cart', None)
         return redirect(url_for('home'))
     except Exception as e:
         print(e)

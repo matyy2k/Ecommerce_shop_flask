@@ -46,9 +46,6 @@ def add_brand():
 
 @app.route('/update_brand/<int:id>', methods=['GET', 'POST'])
 def update_brand(id):
-    if 'email' not in session:
-        flash('Najpierw się zaloguj', 'danger')
-        return redirect(url_for('login'))
     update_brand = Brand.query.get_or_404(id)
     brand = request.form.get('brand')
     if request.method == "POST":
@@ -112,7 +109,7 @@ def update_product(id):
                 product.image = photos.save(request.files.get('image'), name=secrets.token_hex(10) + ".")
         flash('Zaktualizowano', 'success')
         db.session.commit()
-        return redirect(url_for('admin'))
+        return redirect(url_for('product'))
     form.name.data = product.name
     form.price.data = product.price
     form.discount.data = product.discount
