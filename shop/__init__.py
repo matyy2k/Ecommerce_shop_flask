@@ -4,7 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 from flask_mail import Mail, Message
 import os
-from itsdangerous import URLSafeSerializer, SignatureExpired
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 
 from flask_login import LoginManager
 from flask_migrate import Migrate
@@ -20,9 +20,15 @@ photos = UploadSet('photos', IMAGES)
 configure_uploads(app, photos)
 patch_request_class(app)
 
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'esend9634@gmail.com'
+app.config['MAIL_PASSWORD'] = 'qxxncpulmhjvbxkl'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
 mail = Mail(app)
 
-s = URLSafeSerializer('secret')
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)

@@ -1,5 +1,6 @@
-from shop import db, login_manager
+from shop import app, db, login_manager
 from flask_login import UserMixin
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 
 
 class Customer(db.Model, UserMixin):
@@ -12,9 +13,27 @@ class Customer(db.Model, UserMixin):
     contact = db.Column(db.String(50), unique=False)
     address = db.Column(db.String(50), unique=False)
     zipcode = db.Column(db.String(50), unique=False)
+    email_confirmed = db.Column(db.Boolean(), nullable=False, default=False)
 
     def __repr__(self):
         return '<Klient %r>' % self.name
+
+    def get_mail_confirm_token(self):
+        s = URLSafeTimedSerializer(
+            app.config["SECRET_KEY"], salt="email-comfirm"
+        )
+        return s.dumps(self.email, salt="email-confirm")
+
+    @staticmethod
+    def verify_mail_confirm_token(token):
+        try:
+            s = URLSafeTimedSerializer(
+                app.config["SECRET_KEY"], salt="email-confirm"
+            )
+            email = s.loads(token, salt="email-confirm", max_age=3600)
+            return email
+        except SignatureExpired:
+            return None
 
 
 class CustomerOrder(db.Model):

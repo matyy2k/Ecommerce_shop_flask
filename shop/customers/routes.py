@@ -1,8 +1,10 @@
 from flask import render_template, session, request, redirect, url_for, flash
 from flask_login import login_required, logout_user, login_user, current_user
-from shop import app, db, bcrypt
+from shop import app, db, bcrypt, mail
 from .forms import CustomerRegisterForm, CustomerLoginForm
 from .models import Customer, CustomerOrder
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 
 
 @app.route('/profile/<int:id>', methods=['GET', 'POST'])
@@ -41,8 +43,43 @@ def customer_register():
         db.session.add(register)
         flash(f'Użytkownik {form.username.data} zarejestrowany.', 'success')
         db.session.commit()
-        return redirect(url_for('home'))
+        send_mail_confirmation(register)
+        # email = request.form["email"]
+        # token = s.dumps(email, salt='email-confirm')
+        # print(token)
+        #
+        # msg = Message('Potwierdź email', sender='esend9634@gmail.com', recipients=[email])
+        # link = url_for('confirm_email', token=token, _external=True)
+        # msg.body = 'Link: {}'.format(link)
+        # mail.send(msg)
+        return redirect(url_for('customer_login'))
     return render_template('customer/register.html', form=form)
+
+
+def send_mail_confirmation(user):
+    token = user.get_mail_confirm_token()
+    msg = Message(
+        "Please Confirm Your Email",
+        sender="esend9634@gmail.com",
+        recipients=[user.email],
+    )
+    link = url_for('confirm_email', token=token, _external=True)
+    msg.body = 'Link: {}'.format(link)
+    mail.send(msg)
+
+
+@app.route('/confirm_email/<token>')
+def confirm_email(token):
+    email = Customer.verify_mail_confirm_token(token)
+    if email:
+        user = db.session.query(Customer).filter(Customer.email == email).one_or_none()
+        user.email_confirmed = True
+        db.session.add(user)
+        db.session.commit()
+        flash(f"Email potwierdzony", "success")
+        return redirect(url_for("customer_login"))
+    else:
+        return 'Email nie został potwierdzony'
 
 
 @app.route('/customer/login', methods=['GET', 'POST'])
@@ -51,13 +88,17 @@ def customer_login():
     if form.validate_on_submit():
         user = Customer.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
-            session['user_type'] = 'customer'
-            login_user(user)
-            flash('Jesteś zalogowany!', 'success')
-            next = request.args.get('next')
-            return redirect(next or url_for('home'))
-        flash('Niepoprawny login albo hasło', 'danger')
-        return redirect(url_for('customer_login'))
+            if user.email_confirmed:
+                session['user_type'] = 'customer'
+                login_user(user)
+                flash('Jesteś zalogowany!', 'success')
+                next = request.args.get('next')
+                return redirect(next or url_for('home'))
+            else:
+                return render_template('customer/email_error.html')
+        else:
+            flash('Niepoprawny login albo hasło', 'danger')
+            return redirect(url_for('customer_login'))
     return render_template('customer/login.html', form=form)
 
 
