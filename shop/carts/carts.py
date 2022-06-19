@@ -1,7 +1,7 @@
-from flask import render_template, session, request, redirect, url_for, flash
 from shop import app
-from shop.products.models import Product
+from flask import render_template, session, request, redirect, url_for, flash
 from shop.products.routes import brands
+from shop.products.models import Product
 
 
 def merge(dict1, dict2):
@@ -52,7 +52,7 @@ def get_cart():
         subtotal += float(product['price']) * int(product['quantity'])
         subtotal -= discount
         subtotal = float("%.2f" % subtotal)
-    return render_template('products/carts.html', brands=brands(), subtotal=subtotal)
+    return render_template('customer/carts.html', brands=brands(), subtotal=subtotal)
 
 
 @app.route('/update_cart/<int:code>', methods=['POST'])

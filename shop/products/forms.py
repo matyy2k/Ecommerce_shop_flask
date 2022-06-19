@@ -1,5 +1,5 @@
-from wtforms import Form, IntegerField, FloatField, StringField, TextAreaField, validators
 from flask_wtf.file import FileField, FileRequired, FileAllowed
+from wtforms import Form, IntegerField, FloatField, StringField, TextAreaField, validators
 
 
 class Products(Form):

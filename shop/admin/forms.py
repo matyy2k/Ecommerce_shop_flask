@@ -1,10 +1,10 @@
-from wtforms import StringField, PasswordField, validators, ValidationError, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, validators, ValidationError, SubmitField
 from flask_wtf import FlaskForm
 from .models import Admin
 
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Nazwa', [validators.Length(min=4, max=25)])
+    username = StringField('Nazwa', [validators.Length(min=3, max=30)])
     email = StringField('Adres email', [validators.Regexp('(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9]+\.[a-zA-Z0-9.]*\.*['
                                                           'com|org|edu]{3}$)', message="Mail nie spełnia wymagań")])
     password = PasswordField('Hasło', [
@@ -26,5 +26,5 @@ class RegistrationForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-    email = StringField('Adres email', [validators.Length(min=6, max=35)])
+    email = StringField('Adres email', [validators.Length(min=5, max=30)])
     password = PasswordField('Hasło', [validators.DataRequired()])

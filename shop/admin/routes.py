@@ -179,7 +179,7 @@ def register():
         flash(f'Użytkownik {form.username.data} zarejestrowany.', 'success')
         db.session.commit()
         return redirect(url_for('admin'))
-    return render_template('admin/register.html', title='Register user', form=form)
+    return render_template('admin/register.html', title='Rejestracja', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])

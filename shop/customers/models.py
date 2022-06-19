@@ -1,4 +1,4 @@
-from shop import app, db, login_manager
+from shop import app, db
 from flask_login import UserMixin
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 

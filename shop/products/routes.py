@@ -1,5 +1,5 @@
-from flask import render_template, session, request, redirect, url_for, flash, current_app
 from shop import app, db, photos
+from flask import render_template, request, redirect, url_for, flash, current_app
 from .models import Brand, Product
 from .forms import Products
 import secrets

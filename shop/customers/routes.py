@@ -1,5 +1,5 @@
-from flask import render_template, session, request, redirect, url_for, flash
 from flask_login import login_required, logout_user, login_user, current_user
+from flask import render_template, session, request, redirect, url_for, flash
 from shop import app, db, bcrypt, mail
 from .forms import CustomerRegisterForm, CustomerLoginForm
 from .models import Customer, CustomerOrder
