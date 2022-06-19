@@ -41,7 +41,7 @@ def add_brand():
         flash(f'Pomyślnie dodano producenta', 'success')
         db.session.commit()
         return redirect(url_for('add_brand'))
-    return render_template('products/add_brand.html', title='Dodaj producenta', brands='brands')
+    return render_template('admin/add_brand.html', title='Dodaj producenta', brands='brands')
 
 
 @app.route('/update_brand/<int:id>', methods=['GET', 'POST'])
@@ -52,7 +52,7 @@ def update_brand(id):
         update_brand.name = brand
         db.session.commit()
         return redirect(url_for('brands'))
-    return render_template('products/add_brand.html', title='Udate brand', brands='brands', update_brand=update_brand)
+    return render_template('admin/add_brand.html', title='Aktualizuj producenta', brands='brands', update_brand=update_brand)
 
 
 @app.route('/delete_brand/<int:id>', methods=['GET', 'POST'])
@@ -85,7 +85,7 @@ def add_product():
         flash(f'Produkt dodany', 'success')
         db.session.commit()
         return redirect(url_for('product'))
-    return render_template('products/add_product.html', form=form, title='Prześlij', brands=brands)
+    return render_template('admin/add_product.html', form=form, title='Prześlij', brands=brands)
 
 
 @app.route('/update_product/<int:id>', methods=['GET', 'POST'])
@@ -115,7 +115,7 @@ def update_product(id):
     form.discount.data = product.discount
     form.stock.data = product.stock
     form.description.data = product.desc
-    return render_template('products/add_product.html', form=form, title='Zaaktualizuj produkt', getproduct=product,
+    return render_template('admin/add_product.html', form=form, title='Zaaktualizuj produkt', getproduct=product,
                            brands=brands)
 
 

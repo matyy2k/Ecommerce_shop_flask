@@ -19,8 +19,9 @@ def add_cart():
         product = Product.query.filter_by(id=product_id).first()
 
         if request.method == "POST":
-            dict_items = {product_id: {'name': product.name, 'price': float(product.price), 'discount': product.discount,
-                                      'quantity': quantity, 'image': product.image}}
+            dict_items = {
+                product_id: {'name': product.name, 'price': float(product.price), 'discount': product.discount,
+                             'quantity': quantity, 'image': product.image}}
             if 'shopping_cart' in session:
                 print(session['shopping_cart'])
                 if product_id in session['shopping_cart']:

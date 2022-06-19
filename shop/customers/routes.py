@@ -3,8 +3,7 @@ from flask_login import login_required, logout_user, login_user, current_user
 from shop import app, db, bcrypt, mail
 from .forms import CustomerRegisterForm, CustomerLoginForm
 from .models import Customer, CustomerOrder
-from flask_mail import Mail, Message
-from itsdangerous import URLSafeTimedSerializer, SignatureExpired
+from flask_mail import Message
 
 
 @app.route('/profile/<int:id>', methods=['GET', 'POST'])
@@ -44,14 +43,6 @@ def customer_register():
         flash(f'Użytkownik {form.username.data} zarejestrowany.', 'success')
         db.session.commit()
         send_mail_confirmation(register)
-        # email = request.form["email"]
-        # token = s.dumps(email, salt='email-confirm')
-        # print(token)
-        #
-        # msg = Message('Potwierdź email', sender='esend9634@gmail.com', recipients=[email])
-        # link = url_for('confirm_email', token=token, _external=True)
-        # msg.body = 'Link: {}'.format(link)
-        # mail.send(msg)
         return redirect(url_for('customer_login'))
     return render_template('customer/register.html', form=form)
 
@@ -59,7 +50,7 @@ def customer_register():
 def send_mail_confirmation(user):
     token = user.get_mail_confirm_token()
     msg = Message(
-        "Please Confirm Your Email",
+        "Potwierdź adres email",
         sender="esend9634@gmail.com",
         recipients=[user.email],
     )

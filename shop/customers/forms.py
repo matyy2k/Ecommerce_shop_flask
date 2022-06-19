@@ -1,7 +1,6 @@
 from wtforms import StringField, PasswordField, SubmitField, validators, ValidationError
 from flask_wtf import FlaskForm
 from .models import Customer
-import re
 
 
 class CustomerRegisterForm(FlaskForm):
